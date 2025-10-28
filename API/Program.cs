@@ -1,6 +1,17 @@
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+//add CORS services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>();
@@ -10,6 +21,8 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+//use CORS policy
+app.UseCors("AllowReactApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
